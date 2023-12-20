@@ -1,6 +1,7 @@
 package com.examen.pokemonapp.entities;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Pokemon {
