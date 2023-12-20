@@ -1,7 +1,6 @@
 package com.examen.pokemonapp.entities;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 public class Pokemon {
@@ -17,15 +16,13 @@ public class Pokemon {
 
     @ManyToOne
     @JoinColumn(name = "tipo_pokemon_id")
-    private TipoPokemon tipoPokemon;
+    private Tipopokemon tipoPokemon;
 
     @ManyToOne
     @JoinColumn(name = "entrenador_id")
     private Entrenador entrenador;
 
-    // Otros atributos y anotaciones según tus necesidades
-
-    // Getters y Setters
+   
 
     public Long getId() {
         return id;
@@ -67,11 +64,11 @@ public class Pokemon {
         this.generacion = generacion;
     }
 
-    public TipoPokemon getTipoPokemon() {
+    public Tipopokemon getTipoPokemon() {
         return tipoPokemon;
     }
 
-    public void setTipoPokemon(TipoPokemon tipoPokemon) {
+    public void setTipoPokemon(Tipopokemon tipoPokemon) {
         this.tipoPokemon = tipoPokemon;
     }
 
