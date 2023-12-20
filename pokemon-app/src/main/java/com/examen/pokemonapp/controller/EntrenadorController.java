@@ -1,40 +1,37 @@
-package com.examen.pokemonapp.controller;
-
+package com.examen.pokemonapp.controllers;
 import com.examen.pokemonapp.entities.Entrenador;
 import com.examen.pokemonapp.services.EntrenadorService;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-
-@CrossOrigin
 @RestController
 @RequestMapping("/entrenador")
 public class EntrenadorController {
 
-    private final EntrenadorService entrenadorService;
+    @Autowired
+    private EntrenadorService entrenadorService;
 
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@RequestBody Entrenador requestEntrenador) {
+        try {
+            Optional<Entrenador> entrenadorOptional = entrenadorService.getEntrenadorByEmail(requestEntrenador.getEmail());
 
-    public EntrenadorController(EntrenadorService entrenadorService) {
-        this.entrenadorService = entrenadorService;
+            if (entrenadorOptional.isPresent()) {
+                String uuid = entrenadorOptional.get().getId();
+                Map<String, String> response = new HashMap<>();
+                response.put("uuid", uuid);
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(401).build(); // Unauthorized
+            }
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(400).build(); // Bad Request
+        }
     }
-
-    @GetMapping("/all")
-    public List<Entrenador> getAllEntrenadores() {
-        return entrenadorService.getAllEntrenadores();
-    }
-
-    @GetMapping("/{id}")
-    public Entrenador getEntrenadorById(@PathVariable Long id) {
-        return entrenadorService.getEntrenadorById(id)
-                .orElseThrow(() -> new RuntimeException("Entrenador no encontrado con ID: " + id));
-    }
-
-    @PostMapping("/save")
-    public Entrenador saveEntrenador(@RequestBody Entrenador entrenador) {
-        return entrenadorService.saveEntrenador(entrenador);
-    }
-
-  
 }
