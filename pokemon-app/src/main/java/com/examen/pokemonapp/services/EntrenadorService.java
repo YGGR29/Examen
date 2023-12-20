@@ -38,4 +38,9 @@ public class EntrenadorService {
 		return null;
 	}
 
+	public Entrenador getById(String uuid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
