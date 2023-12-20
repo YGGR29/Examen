@@ -5,9 +5,9 @@ import com.examen.pokemonapp.entities.Tipopokemon;
 import com.examen.pokemonapp.services.PokemonService;
 import com.examen.pokemonapp.services.TipoPokemonService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
+@CrossOrigin
 @RestController
 @RequestMapping("/pokemons")
 public class PokemonController {
