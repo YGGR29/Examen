@@ -30,6 +30,11 @@ public class PokemonService {
 		return null;
 	}
 
+	public Pokemon getByUuid(String pokemonUuid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
     
 }
 

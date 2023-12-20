@@ -1,6 +1,9 @@
 package com.examen.pokemonapp.controller;
 import com.examen.pokemonapp.entities.Entrenador;
+import com.examen.pokemonapp.entities.Pokemon;
 import com.examen.pokemonapp.services.EntrenadorService;
+import com.examen.pokemonapp.services.PokemonService;
+
 import jakarta.persistence.EntityNotFoundException;
 
 import org.hibernate.mapping.List;
@@ -30,10 +33,10 @@ public class EntrenadorController {
               
                 return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(401).build(); // Unauthorized
+                return ResponseEntity.status(401).build(); 
             }
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(400).build(); // Bad Request
+            return ResponseEntity.status(400).build(); 
         }
     }
     
@@ -52,6 +55,41 @@ public class EntrenadorController {
         } catch (Exception e) {
           
             return ResponseEntity.status(500).build();
+        }
+    }
+    
+    @Autowired
+    private EntrenadorService EntrenadorService1;
+
+    @Autowired
+    private PokemonService pokemonService;
+
+    @PostMapping("/{entrenadorUuid}/pokemones/{pokemonUuid}")
+    public ResponseEntity<?> agregarPokemonAEntrenador(
+            @PathVariable String entrenadorUuid,
+            @PathVariable String pokemonUuid
+    ) {
+        try {
+            Entrenador entrenador = entrenadorService.getById(entrenadorUuid);
+            Pokemon pokemon = pokemonService.getByUuid(pokemonUuid);
+
+            if (entrenador != null && pokemon != null) {
+               
+                if (entrenador.getPokemones().contains(pokemon)) {
+                    return ResponseEntity.badRequest().body("El Pokémon ya está registrado al entrenador.");
+                }
+
+       
+                entrenador.getPokemones().add(pokemon);
+                entrenadorService.saveEntrenador(entrenador);
+
+                return ResponseEntity.ok("Pokémon agregado correctamente al entrenador.");
+            } else {
+                return ResponseEntity.notFound().build(); 
+            }
+        } catch (Exception e) {
+
+            return ResponseEntity.status(500).build(); 
         }
     }
 }
