@@ -23,7 +23,7 @@ public class EntrenadorController {
             Optional<Entrenador> entrenadorOptional = entrenadorService.getEntrenadorByEmail(requestEntrenador.getEmail());
 
             if (entrenadorOptional.isPresent()) {
-                String uuid = entrenadorOptional.get().getId();
+                Long uuid = entrenadorOptional.get().getId();
                 Map<String, String> response = new HashMap<>();
                 response.put("uuid", uuid);
                 return ResponseEntity.ok(response);

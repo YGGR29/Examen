@@ -25,5 +25,10 @@ public class TipoPokemonService {
         return tipoPokemonRepository.save(tipoPokemon);
     }
 
+	public Tipopokemon getByDescripcion(String tipo) {
+		
+		return null;
+	}
+
  
 }

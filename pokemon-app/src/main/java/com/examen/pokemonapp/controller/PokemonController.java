@@ -1,35 +1,69 @@
 package com.examen.pokemonapp.controller;
 
+import com.examen.pokemonapp.entities.Entrenador;
 import com.examen.pokemonapp.entities.Pokemon;
-import com.examen.pokemonapp.entities.Tipopokemon;
+import com.examen.pokemonapp.services.EntrenadorService;
 import com.examen.pokemonapp.services.PokemonService;
 import com.examen.pokemonapp.services.TipoPokemonService;
-import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
-import org.springframework.web.bind.annotation.CrossOrigin;
-@CrossOrigin
+
 @RestController
 @RequestMapping("/pokemons")
 public class PokemonController {
 
-    private final PokemonService pokemonService;
-    private final TipoPokemonService tipoPokemonService;
+    @Autowired
+    private PokemonService pokemonService;
 
-    public PokemonController(PokemonService pokemonService, TipoPokemonService tipoPokemonService) {
-        this.pokemonService = pokemonService;
-        this.tipoPokemonService = tipoPokemonService;
-    }
+    @Autowired
+    private TipoPokemonService tipoPokemonService;
 
     @GetMapping("/{tipo}")
-    public List<Pokemon> getPokemonesByTipo(@PathVariable String tipo) {
-        Tipopokemon tipoPokemon = tipoPokemonService.getTipoPokemonByDescripcion(tipo)
-                .orElseThrow(() -> new RuntimeException("Tipo de Pokémon no encontrado: " + tipo));
-        return pokemonService.getPokemonesByTipo(tipoPokemon);
+    public ResponseEntity<List<Pokemon>> getPokemonsByTipo(@PathVariable String tipo) {
+        try {
+            List<Pokemon> pokemons = pokemonService.getPokemonesByTipo(tipoPokemonService.getByDescripcion(tipo));
+            return ResponseEntity.ok(pokemons);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build(); 
+        }
     }
+    @Autowired
+    private PokemonService pokemonService1;
 
-    @PostMapping("/save")
-    public Pokemon savePokemon(@RequestBody Pokemon pokemon) {
-        return pokemonService.savePokemon(pokemon);
-    }
+    @Autowired
+    private EntrenadorService entrenadorService;
 
+    @PostMapping
+    
+    public ResponseEntity<Pokemon> registrarPokemon(@RequestBody Pokemon pokemon) {
+        try {
+
+            Entrenador entrenador = entrenadorService.getById(pokemon.getEntrenador().getId());
+            if (entrenador != null) {
+           
+                pokemon.setEntrenador(entrenador);
+                Pokemon nuevoPokemon = pokemonService.registrarPokemon(pokemon);
+                return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPokemon);
+            } else {
+                
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    } 
+    
 }
+

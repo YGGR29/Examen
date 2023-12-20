@@ -33,4 +33,9 @@ public class EntrenadorService {
         return entrenadorRepository.save(entrenador);
     }
 
+	public Entrenador getById(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

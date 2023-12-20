@@ -25,6 +25,11 @@ public class PokemonService {
         return pokemonRepository.save(pokemon);
     }
 
+	public Pokemon registrarPokemon(Pokemon pokemon) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
     
 }
 
